@@ -31,6 +31,5 @@ def index(request):
                 messages.success(request, "File downloaded.")            
                 return redirect("index")
 
-
     form = fileDownloader()
     return render(request, 'index.html', {"form": form})
