@@ -7,7 +7,6 @@ import os
 import glob
 
 from pytube import YouTube
-# Create your views here.
 
 
 def index(request):
