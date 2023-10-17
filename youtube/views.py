@@ -1,6 +1,6 @@
 from django.shortcuts import render,redirect
 from django.contrib import messages
-
+from django.http import HttpResponse
 from .forms import fileDownloader
 
 import os
@@ -28,8 +28,9 @@ def index(request):
                 out_file = video.download(output_path=os.path.join(os.path.expanduser('~'), 'downloads'))
                 file_name = os.path.splitext(out_file)[0]+".mp3"
                 os.rename(out_file, file_name)
-                messages.success(request, "File downloaded.")            
-                return redirect("index")
+            
+                messages.success(request, "File downloaded.")
+                return redirect(index)
 
     form = fileDownloader()
     return render(request, 'index.html', {"form": form})
