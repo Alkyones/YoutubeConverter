@@ -9,3 +9,5 @@ Responsive Youtube Video Converter
 - Major change in UI.
 - Better search and download algorithm.
 - CRUD with User authentication.
+- Friendship system that allows users to interact with each other and share their queries
+- Celery support to allow users to request more than one download at once.
