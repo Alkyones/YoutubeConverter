@@ -11,20 +11,22 @@ https://docs.djangoproject.com/en/4.0/ref/settings/
 """
 
 from pathlib import Path
+import json
 import os
-import environ
 
-env = environ.Env()
-# Build paths inside the project like this: BASE_DIR / 'subdir'.
+CREDENTIALS_DIR = Path(__file__).resolve().parent.parent
 BASE_DIR = Path(__file__).resolve().parent.parent
-environ.Env.read_env(os.path.join(BASE_DIR, '.env'))
+
+credentialsFile = Path.joinpath(CREDENTIALS_DIR .parent.parent, 'credentials/youtubeDownloader.json')
+credentials = json.load(open(credentialsFile))
 
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = env("SECRET_KEY")
+SECRET_KEY = credentials['secretKey']
+
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -80,10 +82,14 @@ WSGI_APPLICATION = 'cfe.wsgi.application'
 # https://docs.djangoproject.com/en/4.0/ref/settings/#databases
 
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
-    }
+        'default': {
+            'ENGINE': 'djongo',
+            'NAME': credentials['dbName'],
+            'ENFORCE_SCHEMA': False,
+            'CLIENT': {
+                'host': credentials['dbUrl'],
+            }  
+        }
 }
 
 

@@ -1,3 +1,4 @@
-pytube
 webpush
-django-environ
+django
+yt-dlp
+djongo

@@ -5,8 +5,15 @@ Responsive Youtube Video Converter
 
 ![preview](/static/images/preview1.png)
 
+# Release v1.2
+ - Now it allows users to request multiple downloads, query implemented.
+ - Status page implemented users can see their download statuses.
+
+ ![preview](/static/images/preview2.png)
+
 # Upcoming Releases
-- Major change in UI.
+- Navbar implementation
+- Status page style improvement.
 - Better search and download algorithm.
 - CRUD with User authentication.
 - Friendship system that allows users to interact with each other and share their queries

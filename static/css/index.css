@@ -1,20 +1,19 @@
 
 body {
     font-family: sans-serif;
-    background-color: #25535e;
+    background-color: #25535e; /* Default background color */
     width: 100%;
     height: 100%;
-    animation: 5s linear 1s infinite alternate bgchange;
+    animation: bgchange 5s linear infinite alternate;
 }
 
 @keyframes bgchange {
-    from {
-        background-color: #25535e;
+    0% {
+        background-color: #25535e; /* Start color */
     }
-    to {
-        background-color: #18414b;
+    100% {
+        background-color: #18414b; /* End color */
     }
-    
 }
 
 p {
@@ -181,4 +180,24 @@ form> button:hover {
         font-size: 1rem;
     }
     
+}
+
+
+.table-container {
+    background-color: rgba(255, 255, 255, 0.9); /* Slightly transparent white background for the table */
+    border-radius: 10px;
+    padding: 20px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Subtle shadow for better focus */
+}
+.table th, .table td {
+    vertical-align: middle; /* Center-align content vertically */
+}
+.btn-primary {
+    font-size: 1.2rem;
+    padding: 10px 20px;
+    border-radius: 5px;
+}
+.text-center h2 {
+    font-weight: bold;
+    color: #ffffff; /* Ensure the title text contrasts with the background */
 }
