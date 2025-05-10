@@ -1,4 +1,5 @@
 webpush
-django
+django==3.2
 yt-dlp
 djongo
+pymongo==3.12.3
