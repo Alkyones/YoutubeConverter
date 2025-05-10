@@ -1,0 +1,140 @@
+/* Styling for the status page */
+.status-container {
+    background-color: rgba(255, 255, 255, 0.95); /* Slightly transparent white background */
+    border-radius: 15px; /* More rounded corners */
+    padding: 30px;
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3); /* Stronger shadow for better focus */
+    margin-top: 50px;
+    max-width: 90%;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.status-header {
+    font-size: 1.8rem;
+    font-weight: bold;
+    color: #ffffff;
+    text-shadow: 2px 2px 6px rgba(0, 0, 0, 0.6); /* Stronger text shadow */
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.table {
+    border-collapse: separate;
+    border-spacing: 0;
+    width: 100%;
+    overflow: hidden;
+    border-radius: 10px; /* Rounded corners for the table */
+}
+
+.table th, .table td {
+    vertical-align: middle; /* Center-align content vertically */
+    text-align: center;
+    padding: 15px;
+}
+
+.table th {
+    background-color: #18414b; /* Darker header background */
+    color: #ffffff; /* White text for contrast */
+    font-size: 1rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05rem;
+}
+
+.table td {
+    font-size: 1rem;
+    color: #25535e;
+    background-color: #f9f9f9; /* Light background for table rows */
+}
+
+.table tr:nth-child(even) td {
+    background-color: #e8f1f5; /* Alternate row color */
+}
+
+.table tr:hover td {
+    background-color: #d0e7ed; /* Highlight row on hover */
+}
+
+.badge {
+    font-size: 1rem;
+    padding: 8px 12px;
+    border-radius: 5px;
+    text-transform: capitalize;
+}
+
+.badge.bg-success {
+    background-color: #28a745;
+    color: #ffffff;
+}
+
+.badge.bg-warning {
+    background-color: #ffc107;
+    color: #212529;
+}
+
+.badge.bg-primary {
+    background-color: #007bff;
+    color: #ffffff;
+}
+
+.badge.bg-danger {
+    background-color: #dc3545;
+    color: #ffffff;
+}
+
+.open-folder-link {
+    color: #337180;
+    font-weight: bold;
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+.open-folder-link:hover {
+    text-decoration: underline;
+    color: #235060;
+}
+
+.btn-primary {
+    font-size: 1.2rem;
+    padding: 12px 25px;
+    border-radius: 25px; /* Fully rounded button */
+    background-color: #337180;
+    border: none;
+    transition: all 0.3s ease;
+    color: #ffffff;
+    font-weight: bold;
+}
+
+.btn-primary:hover {
+    background-color: #235060;
+    transform: scale(1.05);
+}
+
+/* Responsive Design for Status Page */
+@media screen and (max-width: 1120px) {
+    .table th, .table td {
+        font-size: 0.9rem;
+        padding: 10px;
+    }
+
+    .btn-primary {
+        font-size: 1rem;
+        padding: 10px 20px;
+    }
+}
+
+@media screen and (max-width: 790px) {
+    .status-header {
+        font-size: 1rem;
+    }
+
+    .table th, .table td {
+        font-size: 0.8rem;
+        padding: 8px;
+    }
+
+    .btn-primary {
+        font-size: 0.9rem;
+        padding: 8px 15px;
+    }
+}
