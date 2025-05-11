@@ -37,11 +37,12 @@ def process_download():
                 if os.path.exists(mp3_file):
                     task_obj.status = "File already exists"
                     task_obj.file_path = path  # Save the file path
+                    task.obj.title = title  # Save the title
                 else:
                     ydl.download([link])
                     if os.path.exists(original_file):
                         os.rename(original_file, mp3_file)
-
+                    task_obj.title = title
                     task_obj.status = "Completed"
                     task_obj.file_path = mp3_file  # Save the file path
             task_obj.save()
