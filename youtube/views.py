@@ -5,11 +5,7 @@ from django.core.validators import URLValidator
 from django.core.exceptions import ValidationError
 from .forms import fileDownloader
 from .models import DownloadTask
-import os
-import threading
-import queue
-import uuid
-
+import os, threading, queue, uuid
 from yt_dlp import YoutubeDL
 
 download_queue = queue.Queue()
@@ -20,6 +16,7 @@ def process_download():
             break
         link, path, task_id = task
         try:
+           
             task_obj = DownloadTask.objects.get(task_id=task_id)
             task_obj.status = "In Progress"
             task_obj.save()
@@ -27,6 +24,7 @@ def process_download():
             ydl_opts = {
                 'format': 'bestaudio/best',
                 'outtmpl': f'{path}/%(title)s.%(ext)s',
+                'no-mtime': True
             }
 
             with YoutubeDL(ydl_opts) as ydl:
