@@ -81,8 +81,7 @@ def index(request):
                 # Add the download task to the queue
                 download_queue.put((link, path, task_id))
                 messages.info(request, f"Your download request has been added to the queue. Task ID: {task_id}")
-                return redirect(index)
-
+                redirect(status)
             except ValidationError:
                 messages.error(request, "Invalid URL. Please provide a valid YouTube link.")
                 return redirect(index)
