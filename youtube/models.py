@@ -3,6 +3,7 @@ from django.db import models
 class DownloadTask(models.Model):
     task_id = models.CharField(max_length=100, unique=True)
     link = models.URLField()
+    title = models.CharField(max_length=255, blank=True, null=True)
     status = models.CharField(max_length=50, default="Queued")  # e.g., Queued, In Progress, Completed, Error
     error_message = models.TextField(blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
