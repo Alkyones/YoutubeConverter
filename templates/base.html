@@ -10,22 +10,6 @@
 
     {% block head %}
     {% endblock %}
-    <style>
-        /* Custom Navbar Styling */
-        .navbar {
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Add a subtle shadow */
-        }
-        .navbar-brand {
-            font-size: 1.5rem; /* Increase brand size */
-            font-weight: bold;
-        }
-        .nav-link {
-            font-size: 1.1rem; /* Slightly larger font for links */
-        }
-        .container.my-4 {
-            margin-top: 80px; /* Add spacing below the navbar */
-        }
-    </style>
 </head>
 <body>
     <!-- Navbar -->
@@ -43,13 +27,25 @@
                     <li class="nav-item">
                         <a class="nav-link" href="{% url 'status' %}">Status</a>
                     </li>
+                    {% if user.is_authenticated %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'logout' %}">Logout</a>
+                    </li>
+                    {% else %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'login' %}">Login</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'register' %}">Register</a>
+                    </li>
+                    {% endif %}
                 </ul>
             </div>
         </div>
     </nav>
 
     <!-- Main Content -->
-    <div class="container my-4 py-5">
+    <div class="container my-4">
         {% block content %}
         {% endblock %}
     </div>

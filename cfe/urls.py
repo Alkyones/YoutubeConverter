@@ -18,5 +18,7 @@ from django.urls import path, include
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('' , include("youtube.urls"), name='youtube')
+    path('', include("youtube.urls"), name='youtube'),
+    path('accounts/', include('accounts.urls')),  # Include accounts app URLs
+    path('accounts/', include('django.contrib.auth.urls')),  # Default auth URLs
 ]
