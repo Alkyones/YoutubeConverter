@@ -103,12 +103,6 @@ WEBPUSH_SETTINGS = {
    "VAPID_ADMIN_EMAIL": "ceenimo9@gmail.com",
 }
 
-AUTHENTICATION_BACKENDS = [
-    'accounts.backends.UsernameOrEmailBackend',  # Custom backend
-    'django.contrib.auth.backends.ModelBackend',  # Default backend
-]
-
-
 LANGUAGE_CODE = 'en-us'
 TIME_ZONE = 'UTC'
 USE_I18N = True

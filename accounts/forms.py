@@ -1,6 +1,8 @@
 from django import forms
 from django.contrib.auth.models import User
-from django.contrib.auth.forms import UserCreationForm as BaseUserCreationForm
+from django.contrib.auth.forms import UserCreationForm as BaseUserCreationForm, AuthenticationForm
+from django.contrib.auth import authenticate
+
 
 class UserCreationForm(BaseUserCreationForm):
     email = forms.EmailField(required=True, label="Email")
@@ -14,41 +16,14 @@ class UserCreationForm(BaseUserCreationForm):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.fields['username'].label = "Username"
-        self.fields['email'].label = "Email"
-        self.fields['password1'].label = "Password"
-        self.fields['password2'].label = "Confirm Password"
-        self.fields['username'].widget.attrs.update({'placeholder': 'Enter your username'})
-        self.fields['email'].widget.attrs.update({'placeholder': 'Enter your email'})
-        self.fields['password1'].widget.attrs.update({'placeholder': 'Enter your password'})
-        self.fields['password2'].widget.attrs.update({'placeholder': 'Confirm your password'})
-        self.fields['username'].widget.attrs.update({'class': 'form-control'})
-        self.fields['email'].widget.attrs.update({'class': 'form-control'})
-        self.fields['password1'].widget.attrs.update({'class': 'form-control'})
-        self.fields['password2'].widget.attrs.update({'class': 'form-control'})
+        self.fields['username'].widget.attrs.update({'placeholder': 'Enter your username', 'class': 'form-control'})
+        self.fields['email'].widget.attrs.update({'placeholder': 'Enter your email', 'class': 'form-control'})
+        self.fields['password1'].widget.attrs.update({'placeholder': 'Enter your password', 'class': 'form-control'})
+        self.fields['password2'].widget.attrs.update({'placeholder': 'Confirm your password', 'class': 'form-control'})
         self.fields['username'].help_text = "Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only."
         self.fields['email'].help_text = "Required. Inform a valid email address."
         self.fields['password1'].help_text = "Required. 8 characters or more."
         self.fields['password2'].help_text = "Enter the same password as above, for verification."
-        self.fields['username'].error_messages = {
-            'required': "This field is required.",
-            'max_length': "This field is too long.",
-            'invalid': "This field is invalid.",
-        }
-        self.fields['email'].error_messages = {
-            'required': "This field is required.",
-            'invalid': "This field is invalid.",
-        }
-        self.fields['password1'].error_messages = {
-            'required': "This field is required.",
-            'max_length': "This field is too long.",
-            'invalid': "This field is invalid.",
-        }
-        self.fields['password2'].error_messages = {
-            'required': "This field is required.",
-            'max_length': "This field is too long.",
-            'invalid': "This field is invalid.",
-        }
 
     def clean_username(self):
         username = self.cleaned_data.get('username')
@@ -75,3 +50,53 @@ class UserCreationForm(BaseUserCreationForm):
         if commit:
             user.save()
         return user
+
+
+class UserLoginForm(AuthenticationForm):
+    username = forms.CharField(
+        label="Username or Email",
+        widget=forms.TextInput(attrs={
+            'class': 'form-control',
+            'placeholder': 'Enter your username or email'
+        })
+    )
+    password = forms.CharField(
+        label="Password",
+        widget=forms.PasswordInput(attrs={
+            'class': 'form-control',
+            'placeholder': 'Enter your password'
+        })
+    )
+
+    def clean(self):
+        username = self.cleaned_data.get('username')
+        password = self.cleaned_data.get('password')
+
+        if username and password:
+            user = self.authenticate(username=username, password=password)
+            if not user:
+                raise forms.ValidationError("Invalid username/email or password.")
+            self.user_cache = user
+        return self.cleaned_data
+
+    def authenticate(self, username=None, password=None):
+        """
+        Custom authentication logic to allow login with either username or email.
+        """
+        try:
+            # Check if the username is an email
+            user = User.objects.get(email=username)
+        except User.DoesNotExist:
+            # If not an email, try to get the user by username
+            try:
+                user = User.objects.get(username=username)
+            except User.DoesNotExist:
+                return None
+
+        # Check the password
+        if user.check_password(password):
+            return user
+        return None
+
+    def get_user(self):
+        return getattr(self, 'user_cache', None)
