@@ -1,4 +1,5 @@
 from django.shortcuts import render, redirect
+from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.core.validators import URLValidator
 from django.core.exceptions import ValidationError
@@ -11,7 +12,6 @@ import uuid
 
 from yt_dlp import YoutubeDL
 
-# Create a global queue for download tasks
 download_queue = queue.Queue()
 def process_download():
     while True:
@@ -54,10 +54,12 @@ def process_download():
         finally:
             download_queue.task_done()
 
+@login_required
 def status(request):
     tasks = DownloadTask.objects.all().order_by('-created_at')  # Fetch all tasks, most recent first
     return render(request, 'status.html', {"tasks": tasks})
 
+@login_required 
 def index(request):
     if request.method == "POST":
         form = fileDownloader(request.POST)
