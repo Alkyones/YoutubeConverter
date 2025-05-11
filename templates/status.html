@@ -19,7 +19,7 @@
             <table class="table table-bordered table-hover align-middle">
                 <thead>
                     <tr>
-                        <th>Task ID</th>
+                        <th>Title</th>
                         <th>Link</th>
                         <th>Status</th>
                         <th>Error Message</th>
@@ -31,7 +31,7 @@
                 <tbody>
                     {% for task in tasks %}
                     <tr>
-                        <td>{{ task.task_id }}</td>
+                        <td>{{ task.title }}</td>
                         <td><a href="{{ task.link }}" target="_blank" class="text-decoration-none">{{ task.link }}</a></td>
                         <td>
                             {% if task.status == "Completed" %}
