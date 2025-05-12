@@ -21,4 +21,3 @@ Responsive Youtube Video Converter
 - Status page style improvement.
 - Better search and download algorithm.
 - Friendship system that allows users to interact with each other and share their queries
-- Celery support to allow users to request more than one download at once.
