@@ -14,6 +14,8 @@ Responsive Youtube Video Converter
  - Navbar updated for authentication
  - Added feature to allow users to authenticate with email or username
  - Status page updated by removing the task id and adding the downloaded resources's title.
+ - Status page automatically updated upon table change.
+ - Download button redirects user to status page. 
 
  ![preview](/static/images/preview2.png)
 
