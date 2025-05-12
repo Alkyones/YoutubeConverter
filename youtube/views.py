@@ -37,7 +37,7 @@ def process_download():
                 if os.path.exists(mp3_file):
                     task_obj.status = "File already exists"
                     task_obj.file_path = path  # Save the file path
-                    task.obj.title = title  # Save the title
+                    task_obj.title = title  # Save the title
                 else:
                     ydl.download([link])
                     if os.path.exists(original_file):
@@ -81,13 +81,13 @@ def index(request):
                 # Add the download task to the queue
                 download_queue.put((link, path, task_id))
                 messages.info(request, f"Your download request has been added to the queue. Task ID: {task_id}")
-                redirect(status)
+                return redirect("status")
             except ValidationError:
                 messages.error(request, "Invalid URL. Please provide a valid YouTube link.")
-                return redirect(index)
+                return redirect("index")
             except Exception as e:
                 messages.error(request, f"An error occurred: {str(e)}")
-                return redirect(index)
+                return redirect("index")
 
     form = fileDownloader()
     return render(request, 'index.html', {"form": form})
