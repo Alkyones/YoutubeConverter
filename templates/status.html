@@ -73,5 +73,45 @@
     function openFolder(filePath) {
         alert("This feature is under development. Please check back later.");
     }
+
+    function fetchTaskStatus() {
+        fetch("{% url 'get_task_status' %}")
+            .then(response => response.json())
+            .then(data => {
+                const tableBody = document.querySelector(".table tbody"); // Updated selector to match your table
+                tableBody.innerHTML = ""; // Clear existing rows
+
+                data.forEach(task => {
+                    const row = `
+                        <tr>
+                            <td>${task.title || 'N/A'}</td>
+                            <td><a href="${task.link}" target="_blank" class="text-decoration-none">${task.link}</a></td>
+                            <td>
+                                <span class="badge ${
+                                    task.status === "Completed" ? "bg-success" :
+                                    task.status === "In Progress" ? "bg-warning text-dark" :
+                                    task.status === "Queued" ? "bg-primary" : "bg-danger"
+                                }">${task.status}</span>
+                            </td>
+                            <td>${task.error_message || '-'}</td>
+                            <td>${new Date(task.created_at).toLocaleString()}</td>
+                            <td>${new Date(task.updated_at).toLocaleString()}</td>
+                            <td>
+                                ${
+                                    task.file_path
+                                        ? `<a href="javascript:void(0);" onclick="openFolder('${task.file_path}')" class="open-folder-link">Open Folder</a>`
+                                        : '<span class="text-muted">Not Available</span>'
+                                }
+                            </td>
+                        </tr>
+                    `;
+                    tableBody.innerHTML += row;
+                });
+            })
+            .catch(error => console.error("Error fetching task status:", error));
+    }
+
+    setInterval(fetchTaskStatus, 8000);
+    fetchTaskStatus();
 </script>
 {% endblock %}

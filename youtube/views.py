@@ -3,6 +3,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.core.validators import URLValidator
 from django.core.exceptions import ValidationError
+from django.http import JsonResponse
 from .forms import fileDownloader
 from .models import DownloadTask
 import os, threading, queue, uuid
@@ -57,6 +58,14 @@ def process_download():
 def status(request):
     tasks = DownloadTask.objects.all().order_by('-created_at')  # Fetch all tasks, most recent first
     return render(request, 'status.html', {"tasks": tasks})
+
+@login_required
+def get_task_status(request):
+    tasks = DownloadTask.objects.all().order_by('-created_at').values(
+        'title', 'link', 'status', 'error_message', 'created_at', 'updated_at', 'file_path'
+    )
+    return JsonResponse(list(tasks), safe=False)
+
 
 @login_required 
 def index(request):
