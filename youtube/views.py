@@ -10,6 +10,7 @@ import os, threading, queue, uuid
 from yt_dlp import YoutubeDL
 
 download_queue = queue.Queue()
+
 def process_download():
     while True:
         task = download_queue.get()
@@ -17,7 +18,6 @@ def process_download():
             break
         link, path, task_id = task
         try:
-           
             task_obj = DownloadTask.objects.get(task_id=task_id)
             task_obj.status = "In Progress"
             task_obj.save()
@@ -37,15 +37,15 @@ def process_download():
 
                 if os.path.exists(mp3_file):
                     task_obj.status = "File already exists"
-                    task_obj.file_path = path  # Save the file path
-                    task_obj.title = title  # Save the title
+                    task_obj.file_path = path
+                    task_obj.title = title
                 else:
                     ydl.download([link])
                     if os.path.exists(original_file):
                         os.rename(original_file, mp3_file)
                     task_obj.title = title
                     task_obj.status = "Completed"
-                    task_obj.file_path = mp3_file  # Save the file path
+                    task_obj.file_path = mp3_file
             task_obj.save()
         except Exception as e:
             task_obj.status = "Error"
@@ -56,16 +56,15 @@ def process_download():
 
 @login_required
 def status(request):
-    tasks = DownloadTask.objects.all().order_by('-created_at')  # Fetch all tasks, most recent first
+    tasks = DownloadTask.objects.filter(user=request.user).order_by('-created_at')
     return render(request, 'status.html', {"tasks": tasks})
 
 @login_required
 def get_task_status(request):
-    tasks = DownloadTask.objects.all().order_by('-created_at').values(
+    tasks = DownloadTask.objects.filter(user=request.user).order_by('-created_at').values(
         'title', 'link', 'status', 'error_message', 'created_at', 'updated_at', 'file_path'
     )
     return JsonResponse(list(tasks), safe=False)
-
 
 @login_required 
 def index(request):
@@ -75,19 +74,16 @@ def index(request):
             link = form.cleaned_data["link"]
             validator = URLValidator()
             try:
-                # Validate the URL
                 validator(link)
-
-                # Define the download path
                 path = os.path.join(os.path.expanduser('~'), 'downloads')
-
-                # Generate a unique task ID
                 task_id = str(uuid.uuid4())
-
-                # Create a new task in the database
-                DownloadTask.objects.create(task_id=task_id, link=link, status="Queued")
-
-                # Add the download task to the queue
+                # Associate the task with the current user
+                DownloadTask.objects.create(
+                    task_id=task_id,
+                    link=link,
+                    status="Queued",
+                    user=request.user  # Make sure your model has a user field (ForeignKey)
+                )
                 download_queue.put((link, path, task_id))
                 messages.info(request, f"Your download request has been added to the queue. Task ID: {task_id}")
                 return redirect("status")
@@ -100,6 +96,5 @@ def index(request):
 
     form = fileDownloader()
     return render(request, 'index.html', {"form": form})
-
 
 threading.Thread(target=process_download, daemon=True).start()
