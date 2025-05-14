@@ -25,7 +25,8 @@ SECRET_KEY = credentials['secretKey']
 DEBUG = True
 
 ALLOWED_HOSTS = []
-
+SESSION_ENGINE = 'django.contrib.sessions.backends.file'
+SESSION_FILE_PATH = BASE_DIR / 'sessions'
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -68,7 +69,6 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'cfe.wsgi.application'
-
 
 DATABASES = {
         'default': {
