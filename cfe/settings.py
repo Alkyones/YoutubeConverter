@@ -71,24 +71,24 @@ TEMPLATES = [
 WSGI_APPLICATION = 'cfe.wsgi.application'
 
 
-# DATABASES = {
-#         'default': {
-#             'ENGINE': 'djongo',
-#             'NAME': credentials['dbName'],
-#             'ENFORCE_SCHEMA': False,
-#             'CLIENT': {
-#                 'host': credentials['dbUrl'],
-#             }  
-#         }
-# }
-
-
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
-    }
+        'default': {
+            'ENGINE': 'djongo',
+            'NAME': credentials['dbName'],
+            'ENFORCE_SCHEMA': False,
+            'CLIENT': {
+                'host': credentials['dbUrl'],
+            }  
+        }
 }
+
+
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.sqlite3',
+#         'NAME': BASE_DIR / 'db.sqlite3',
+#     }
+# }
 
 
 AUTH_PASSWORD_VALIDATORS = [
