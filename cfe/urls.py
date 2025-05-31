@@ -21,4 +21,5 @@ urlpatterns = [
     path('', include("youtube.urls"), name='youtube'),
     path('accounts/', include('accounts.urls')),  # Include accounts app URLs
     path('accounts/', include('django.contrib.auth.urls')),  # Default auth URLs
+    path('', include('integrations.urls')),  # Include integrations app URLs
 ]
