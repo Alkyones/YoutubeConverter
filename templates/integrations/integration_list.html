@@ -9,7 +9,7 @@
             </div>
             <div class="card shadow-sm">
                 <div class="card-body p-0">
-                    <table class="table table-hover mb-0">
+                    <table class="table table-hover mb-0 align-middle">
                         <thead class="table-dark">
                             <tr>
                                 <th style="width: 10%;">ID</th>
@@ -19,8 +19,9 @@
                         </thead>
                         <tbody>
                             {% for integration in integrations %}
-                            <tr>
-                                <td>{{ integration.id }}</td>
+                            {{integration}}
+                            <tr class="align-middle {% cycle 'table-light' 'table-white' %}">
+                                <td class="fw-bold">{{ integration.id }}</td>
                                 <td>{{ integration.name }}</td>
                                 <td>
                                     <!-- Add edit/delete buttons here if needed -->
@@ -39,27 +40,33 @@
     </div>
 </div>
 
-<!-- Add Integration Modal -->
 <div class="modal fade" id="addIntegrationModal" tabindex="-1" aria-labelledby="addIntegrationModalLabel" aria-hidden="true">
-  <div class="modal-dialog">
+  <div class="modal-dialog modal-lg">
     <div class="modal-content">
-      <form id="addIntegrationForm" method="post">
         <div class="modal-header">
           <h5 class="modal-title" id="addIntegrationModalLabel">Add Integration</h5>
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
-        <div class="modal-body">
-            {% csrf_token %}
+      <form id="addIntegrationForm" method="post">
+          {% csrf_token %}
+          {% for field in form %}
             <div class="mb-3">
-                <label for="integrationName" class="form-label">Name</label>
-                <input type="text" class="form-control" id="integrationName" name="name" required>
-            </div>
+              <label for="{{ field.id_for_label }}" class="form-label"></label>
+              {{ field }}
+              {% if field.help_text %}
+                <div class="form-text">{{ field.help_text }}</div>
+              {% endif %}
+              {% for error in field.errors %}
+                <div class="text-danger small">{{ error }}</div>
+              {% endfor %}
+          {% endfor %}
+          <input type="hidden" name="type" value="telegram">
         </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-          <button type="submit" class="btn btn-primary">Add</button>
-        </div>
-      </form>
+    </form>
+    <div class="modal-footer">
+      <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+      <button type="submit" class="btn btn-primary">Add Telegram Integration</button>
+    </div>
     </div>
   </div>
 </div>
@@ -67,14 +74,15 @@
 <script>
 document.getElementById('addIntegrationForm').addEventListener('submit', function(e) {
     e.preventDefault();
-    const name = document.getElementById('integrationName').value;
+    const formData = new FormData(this);
+    const data = {};
+    formData.forEach((value, key) => { data[key] = value; });
     fetch("{% url 'integration-list-create' %}", {
         method: "POST",
         headers: {
-            "Content-Type": "application/json",
             "X-CSRFToken": "{{ csrf_token }}",
         },
-        body: JSON.stringify({ name: name })
+        body: formData,
     })
     .then(response => response.json())
     .then(data => {
