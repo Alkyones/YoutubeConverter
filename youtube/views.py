@@ -18,6 +18,7 @@ def process_download():
             break
         link, path, task_id = task
         try:
+            # Use task_id (string UUID) instead of id to find the task
             task_obj = DownloadTask.objects.get(task_id=task_id)
             task_obj.status = "In Progress"
             task_obj.save()
@@ -46,11 +47,24 @@ def process_download():
                     task_obj.title = title
                     task_obj.status = "Completed"
                     task_obj.file_path = mp3_file
+            
+            # Explicitly set user to avoid ObjectId issues
+            if hasattr(task_obj, 'user') and task_obj.user:
+                # Keep the user as is, don't modify it
+                pass
+            
             task_obj.save()
+            
+        except DownloadTask.DoesNotExist:
+            print(f"Task with task_id {task_id} not found")
         except Exception as e:
-            task_obj.status = "Error"
-            task_obj.error_message = str(e)
-            task_obj.save()
+            try:
+                task_obj = DownloadTask.objects.get(task_id=task_id)
+                task_obj.status = "Error"
+                task_obj.error_message = str(e)
+                task_obj.save()
+            except:
+                print(f"Error updating task {task_id}: {str(e)}")
         finally:
             download_queue.task_done()
 
