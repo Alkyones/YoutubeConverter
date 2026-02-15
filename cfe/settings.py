@@ -37,8 +37,6 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'youtube',
     'webpush',
-    'accounts',
-    'integrations',
 ]
 
 MIDDLEWARE = [
@@ -73,30 +71,11 @@ WSGI_APPLICATION = 'cfe.wsgi.application'
 
 
 DATABASES = {
-        'default': {
-            'ENGINE': 'djongo',
-            'NAME': credentials['dbName'],
-            'ENFORCE_SCHEMA': False,
-            'CLIENT': {
-                'host': credentials['dbUrl'],
-            }  
-        }
+    'default': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3',
+    }
 }
-
-AUTH_PASSWORD_VALIDATORS = [
-    {
-        'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
-    },
-]
 
 WEBPUSH_SETTINGS = {
    "VAPID_PUBLIC_KEY": "BOrK4AGHOT47xPIdwvekq6chhNQyE4NP96_WHX1OHc7JGnr99-KE5t_wWOl_s9Wst_LFEMPSb-X3dGMlkmRaUhk",
@@ -115,5 +94,3 @@ STATIC_URL = 'static/'
 
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
-LOGIN_REDIRECT_URL = '/'
-LOGOUT_REDIRECT_URL = '/'
