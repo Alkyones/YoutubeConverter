@@ -1,0 +1,26 @@
+version: '3.8'
+
+services:
+  yconv:
+    build: .
+    container_name: yconv
+    ports:
+      - "8000:8000"
+    volumes:
+      # Persist downloads
+      - yconv_downloads:/app/backend/media
+      # Persist database
+      - yconv_data:/app/backend/data
+      # Persist sessions
+      - yconv_sessions:/app/backend/sessions
+    environment:
+      - DEBUG=True
+      - ALLOWED_HOSTS=localhost,127.0.0.1,0.0.0.0
+      - SECRET_KEY=your-secret-key-change-this-in-production
+      - DOCKER_CONTAINER=true
+    restart: unless-stopped
+
+volumes:
+  yconv_downloads:
+  yconv_data:
+  yconv_sessions:

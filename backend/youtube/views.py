@@ -4,10 +4,20 @@ from django.core.validators import URLValidator
 from django.core.exceptions import ValidationError
 from django.http import JsonResponse
 from django.db.models import Count
+from django.conf import settings
 from .forms import fileDownloader
 from .models import DownloadTask
-import os, threading, queue, uuid, time
+import os, threading, queue, uuid, time, re, subprocess, platform
 from yt_dlp import YoutubeDL
+
+# Regex to strip ANSI escape codes from error messages
+ANSI_ESCAPE_PATTERN = re.compile(r'\x1b\[[0-9;]*m|\x1b\[[0-9;]*[A-Za-z]|\x1b\].*?\x07')
+
+def strip_ansi_codes(text):
+    """Remove ANSI escape codes from text"""
+    if text is None:
+        return None
+    return ANSI_ESCAPE_PATTERN.sub('', str(text))
 
 download_queue = queue.Queue()
 _processing_thread = None
@@ -242,7 +252,7 @@ def process_download():
             try:
                 task_obj = DownloadTask.objects.get(task_id=task_id)
                 task_obj.status = "Error"
-                task_obj.error_message = str(e)
+                task_obj.error_message = strip_ansi_codes(str(e))
                 task_obj.save()
                 print(f"Updated task {task_id} with error status")
             except Exception as save_error:
@@ -261,6 +271,26 @@ def get_task_status(request):
         'title', 'link', 'format', 'quality', 'status', 'error_message', 'created_at', 'updated_at', 'file_path'
     )
     return JsonResponse(list(tasks), safe=False)
+
+def open_downloads_folder(request):
+    """Open the downloads folder in the system file explorer"""
+    downloads_path = os.path.join(settings.BASE_DIR, 'media')
+    
+    # Create folder if it doesn't exist
+    os.makedirs(downloads_path, exist_ok=True)
+    
+    try:
+        system = platform.system()
+        if system == 'Windows':
+            os.startfile(downloads_path)
+        elif system == 'Darwin':  # macOS
+            subprocess.run(['open', downloads_path])
+        else:  # Linux
+            subprocess.run(['xdg-open', downloads_path])
+        
+        return JsonResponse({'success': True, 'path': downloads_path})
+    except Exception as e:
+        return JsonResponse({'success': False, 'error': str(e)}, status=500)
 
 def index(request):
     # Ensure processing thread is running every time someone accesses the page

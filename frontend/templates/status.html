@@ -5,8 +5,8 @@
 <title>YConv - Download Status</title>
 <style>
     .status-hero {
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        padding: 3rem 0;
+        background: var(--bg-hero);
+        padding: 6rem 0 3rem 0;
         margin-top: -20px;
         position: relative;
         overflow: hidden;
@@ -18,7 +18,7 @@
         left: 0;
         width: 100%;
         height: 100%;
-        background: radial-gradient(circle at 30% 70%, rgba(255, 119, 198, 0.3) 0%, transparent 50%);
+        background: radial-gradient(circle at 30% 70%, rgba(255, 107, 0, 0.15) 0%, transparent 50%);
         z-index: 1;
     }
     .status-hero-content {
@@ -28,14 +28,14 @@
     .status-icon {
         width: 120px;
         height: 120px;
-        background: rgba(255, 255, 255, 0.1);
+        background: rgba(255, 107, 0, 0.15);
         backdrop-filter: blur(20px);
         border-radius: 50%;
         display: flex;
         align-items: center;
         justify-content: center;
         margin: 0 auto 1.5rem;
-        border: 2px solid rgba(255, 255, 255, 0.2);
+        border: 2px solid rgba(255, 107, 0, 0.3);
     }
     .status-title {
         color: white;
@@ -50,23 +50,34 @@
         margin-bottom: 0;
     }
     .modern-table-container {
-        background: rgba(255, 255, 255, 0.95);
+        background: var(--bg-card);
         backdrop-filter: blur(20px);
         border-radius: 24px;
         padding: 2rem;
         margin: 2rem auto;
-        box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
-        border: 1px solid rgba(255, 255, 255, 0.2);
-        max-width: 1400px;
+        box-shadow: var(--shadow-xl);
+        border: 1px solid var(--border-color);
+        max-width: 1200px;
     }
     .modern-table {
         border: none;
         border-radius: 16px;
+        box-shadow: var(--shadow-md);
+        width: 100%;
+        margin-bottom: 0;
+        table-layout: auto;
+    }
+    .table-responsive {
+        border-radius: 16px;
         overflow: hidden;
-        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    }
+    @media (max-width: 992px) {
+        .table-responsive {
+            overflow-x: auto;
+        }
     }
     .modern-table thead th {
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        background: var(--primary-gradient);
         color: white;
         font-weight: 600;
         font-size: 0.875rem;
@@ -74,21 +85,22 @@
         letter-spacing: 0.05em;
         padding: 1rem 0.75rem;
         border: none;
+        white-space: nowrap;
     }
     .modern-table tbody tr {
         transition: all 0.3s ease;
-        border-bottom: 1px solid #e2e8f0;
+        border-bottom: 1px solid var(--border-color);
+        background: var(--bg-card);
     }
     .modern-table tbody tr:hover {
-        background-color: #f8fafc;
-        transform: translateY(-1px);
-        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        background: var(--bg-tertiary);
     }
     .modern-table tbody td {
         padding: 1rem 0.75rem;
         border: none;
         vertical-align: middle;
         font-size: 0.875rem;
+        color: var(--text-primary) !important;
     }
     .status-badge {
         padding: 0.5rem 1rem;
@@ -98,17 +110,19 @@
         text-transform: uppercase;
         letter-spacing: 0.05em;
         border: none;
+        white-space: nowrap;
+        display: inline-block;
     }
     .badge-completed {
         background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
         color: white;
     }
     .badge-progress {
-        background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+        background: var(--primary-gradient);
         color: white;
     }
     .badge-queued {
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        background: linear-gradient(135deg, #555 0%, #777 100%);
         color: white;
     }
     .badge-error {
@@ -116,23 +130,24 @@
         color: white;
     }
     .format-badge {
-        background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);
-        color: #2d3748;
+        background: rgba(255, 107, 0, 0.15);
+        color: var(--primary);
         padding: 0.25rem 0.75rem;
         border-radius: 25px;
         font-weight: 600;
         font-size: 0.75rem;
     }
     .quality-badge {
-        background: rgba(102, 126, 234, 0.1);
-        color: #667eea;
+        background: rgba(255, 107, 0, 0.1);
+        color: var(--primary);
         padding: 0.25rem 0.75rem;
         border-radius: 25px;
         font-weight: 500;
         font-size: 0.75rem;
+        border: 1px solid rgba(255, 107, 0, 0.3);
     }
     .url-link {
-        color: #667eea;
+        color: var(--primary);
         text-decoration: none;
         font-weight: 500;
         transition: all 0.3s ease;
@@ -143,11 +158,11 @@
         display: inline-block;
     }
     .url-link:hover {
-        color: #764ba2;
+        color: var(--primary-light);
         text-decoration: underline;
     }
     .action-btn {
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        background: var(--primary-gradient);
         border: none;
         border-radius: 12px;
         padding: 0.75rem 2rem;
@@ -161,18 +176,60 @@
     }
     .action-btn:hover {
         transform: translateY(-2px);
-        box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+        box-shadow: var(--shadow-lg);
         color: white;
+    }
+    .action-btn-secondary {
+        background: transparent;
+        border: 2px solid var(--primary);
+        border-radius: 12px;
+        padding: 0.75rem 2rem;
+        color: var(--primary);
+        font-weight: 600;
+        text-decoration: none;
+        transition: all 0.3s ease;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        cursor: pointer;
+    }
+    .action-btn-secondary:hover {
+        background: var(--primary);
+        color: white;
+        transform: translateY(-2px);
+        box-shadow: var(--shadow-lg);
+    }
+    .btn-group {
+        display: flex;
+        gap: 1rem;
+        justify-content: center;
+        flex-wrap: wrap;
     }
     .empty-state {
         text-align: center;
         padding: 3rem;
-        color: #718096;
+        color: var(--text-muted);
     }
     .empty-icon {
         font-size: 4rem;
-        color: #e2e8f0;
+        color: var(--text-muted);
         margin-bottom: 1rem;
+    }
+    .title-cell {
+        color: var(--text-primary) !important;
+        font-weight: 500;
+    }
+    .table {
+        --bs-table-color: var(--text-primary);
+        --bs-table-bg: transparent;
+        color: var(--text-primary);
+    }
+    .text-muted {
+        color: var(--text-muted) !important;
+    }
+    .error-text {
+        color: #ff6b6b;
+        font-size: 0.8rem;
     }
     @media (max-width: 768px) {
         .modern-table-container {
@@ -191,7 +248,7 @@
 
 {% block content %}
 <div class="status-hero">
-    <div class="container">
+    <div class="container-fluid">
         <div class="status-hero-content">
             <div class="text-center">
                 <div class="status-icon">
@@ -204,7 +261,7 @@
     </div>
 </div>
 
-<div class="container">
+<div class="container-fluid" style="max-width: 1200px; margin: 0 auto;">
     <div class="modern-table-container">
         <div class="table-responsive">
             <table class="table modern-table">
@@ -224,7 +281,7 @@
                     {% for task in tasks %}
                     <tr>
                         <td>
-                            <div class="fw-medium text-truncate" style="max-width: 200px;">
+                            <div class="title-cell text-truncate" style="max-width: 200px;">
                                 {{ task.title|default:"N/A" }}
                             </div>
                         </td>
@@ -259,7 +316,7 @@
                             {% endif %}
                         </td>
                         <td>
-                            <div class="text-truncate" style="max-width: 200px;" title="{{ task.error_message }}">
+                            <div class="text-truncate error-text" style="max-width: 200px;" title="{{ task.error_message }}">
                                 {{ task.error_message|default:"-" }}
                             </div>
                         </td>
@@ -293,14 +350,33 @@
     </div>
 
     <div class="text-center mb-5">
-        <a href="{% url 'index' %}" class="action-btn">
-            <i class="fas fa-arrow-left"></i>
-            Back to Converter
-        </a>
+        <div class="btn-group">
+            <a href="{% url 'index' %}" class="action-btn">
+                <i class="fas fa-arrow-left"></i>
+                Back to Converter
+            </a>
+            <button onclick="openDownloadsFolder()" class="action-btn-secondary">
+                <i class="fas fa-folder-open"></i>
+                Open Downloads
+            </button>
+        </div>
     </div>
 </div>
 
 <script>
+    function openDownloadsFolder() {
+        fetch("{% url 'open_downloads_folder' %}")
+            .then(response => response.json())
+            .then(data => {
+                if (!data.success) {
+                    alert('Could not open folder: ' + data.error);
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Could not open downloads folder');
+            });
+    }
     // Auto-refresh status every 5 seconds
     function fetchTaskStatus() {
         fetch("{% url 'get_task_status' %}")
@@ -332,7 +408,7 @@
                     const row = `
                         <tr>
                             <td>
-                                <div class="fw-medium text-truncate" style="max-width: 200px;">
+                                <div class="title-cell text-truncate" style="max-width: 200px;">
                                     ${task.title || 'N/A'}
                                 </div>
                             </td>
@@ -349,7 +425,7 @@
                             </td>
                             <td>${statusBadge}</td>
                             <td>
-                                <div class="text-truncate" style="max-width: 200px;" title="${task.error_message || ''}">
+                                <div class="text-truncate error-text" style="max-width: 200px;" title="${task.error_message || ''}">
                                     ${task.error_message || '-'}
                                 </div>
                             </td>

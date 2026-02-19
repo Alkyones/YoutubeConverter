@@ -21,14 +21,19 @@ PROJECT_ROOT = BASE_DIR.parent
 # Frontend directory
 FRONTEND_DIR = PROJECT_ROOT / 'frontend'
 
+# Load credentials from file or environment variables (for Docker)
 credentialsFile = PROJECT_ROOT.parent.parent / 'credentials/youtubeDownloader.json'
-credentials = json.load(open(credentialsFile))
+if os.path.exists(credentialsFile):
+    credentials = json.load(open(credentialsFile))
+    SECRET_KEY = credentials['secretKey']
+else:
+    # Use environment variable in Docker or generate a default for development
+    SECRET_KEY = os.environ.get('SECRET_KEY', 'django-insecure-docker-dev-key-change-in-production')
 
-SECRET_KEY = credentials['secretKey']
+DEBUG = os.environ.get('DEBUG', 'True') == 'True'
 
-DEBUG = True
-
-ALLOWED_HOSTS = []
+# Allow hosts from environment variable or default to localhost
+ALLOWED_HOSTS = os.environ.get('ALLOWED_HOSTS', 'localhost,127.0.0.1').split(',')
 SESSION_ENGINE = 'django.contrib.sessions.backends.file'
 SESSION_FILE_PATH = BASE_DIR / 'sessions'
 
@@ -73,11 +78,18 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'cfe.wsgi.application'
 
+# Database path - use data directory if running in Docker (check via env var or directory existence)
+# For Docker: /app/backend/data/db.sqlite3
+# For local dev: /backend/db.sqlite3
+if os.environ.get('DOCKER_CONTAINER') or (BASE_DIR / 'data').is_dir():
+    DB_DIR = BASE_DIR / 'data'
+else:
+    DB_DIR = BASE_DIR
 
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'NAME': DB_DIR / 'db.sqlite3',
     }
 }
 
