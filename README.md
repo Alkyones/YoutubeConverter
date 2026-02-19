@@ -193,8 +193,3 @@ If you find this project useful, please consider giving it a star! ⭐
 ---
 
 <div align="center">
-
-Made with ❤️ by [Your Name]
-
-</div>
-- Friendship system that allows users to interact with each other and share their queries
