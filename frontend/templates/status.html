@@ -1,0 +1,396 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block head %}
+<title>YConv - Download Status</title>
+<style>
+    .status-hero {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        padding: 3rem 0;
+        margin-top: -20px;
+        position: relative;
+        overflow: hidden;
+    }
+    .status-hero::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: radial-gradient(circle at 30% 70%, rgba(255, 119, 198, 0.3) 0%, transparent 50%);
+        z-index: 1;
+    }
+    .status-hero-content {
+        position: relative;
+        z-index: 2;
+    }
+    .status-icon {
+        width: 120px;
+        height: 120px;
+        background: rgba(255, 255, 255, 0.1);
+        backdrop-filter: blur(20px);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 1.5rem;
+        border: 2px solid rgba(255, 255, 255, 0.2);
+    }
+    .status-title {
+        color: white;
+        font-size: 3rem;
+        font-weight: 700;
+        margin-bottom: 0.5rem;
+        text-shadow: 0 4px 20px rgba(0,0,0,0.3);
+    }
+    .status-subtitle {
+        color: rgba(255, 255, 255, 0.8);
+        font-size: 1.25rem;
+        margin-bottom: 0;
+    }
+    .modern-table-container {
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(20px);
+        border-radius: 24px;
+        padding: 2rem;
+        margin: 2rem auto;
+        box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        max-width: 1400px;
+    }
+    .modern-table {
+        border: none;
+        border-radius: 16px;
+        overflow: hidden;
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    }
+    .modern-table thead th {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        font-weight: 600;
+        font-size: 0.875rem;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        padding: 1rem 0.75rem;
+        border: none;
+    }
+    .modern-table tbody tr {
+        transition: all 0.3s ease;
+        border-bottom: 1px solid #e2e8f0;
+    }
+    .modern-table tbody tr:hover {
+        background-color: #f8fafc;
+        transform: translateY(-1px);
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    }
+    .modern-table tbody td {
+        padding: 1rem 0.75rem;
+        border: none;
+        vertical-align: middle;
+        font-size: 0.875rem;
+    }
+    .status-badge {
+        padding: 0.5rem 1rem;
+        border-radius: 50px;
+        font-weight: 600;
+        font-size: 0.75rem;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        border: none;
+    }
+    .badge-completed {
+        background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+        color: white;
+    }
+    .badge-progress {
+        background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+        color: white;
+    }
+    .badge-queued {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+    }
+    .badge-error {
+        background: linear-gradient(135deg, #ff6b6b 0%, #ee5a24 100%);
+        color: white;
+    }
+    .format-badge {
+        background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);
+        color: #2d3748;
+        padding: 0.25rem 0.75rem;
+        border-radius: 25px;
+        font-weight: 600;
+        font-size: 0.75rem;
+    }
+    .quality-badge {
+        background: rgba(102, 126, 234, 0.1);
+        color: #667eea;
+        padding: 0.25rem 0.75rem;
+        border-radius: 25px;
+        font-weight: 500;
+        font-size: 0.75rem;
+    }
+    .url-link {
+        color: #667eea;
+        text-decoration: none;
+        font-weight: 500;
+        transition: all 0.3s ease;
+        max-width: 200px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        display: inline-block;
+    }
+    .url-link:hover {
+        color: #764ba2;
+        text-decoration: underline;
+    }
+    .action-btn {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        border: none;
+        border-radius: 12px;
+        padding: 0.75rem 2rem;
+        color: white;
+        font-weight: 600;
+        text-decoration: none;
+        transition: all 0.3s ease;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+    .action-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+        color: white;
+    }
+    .empty-state {
+        text-align: center;
+        padding: 3rem;
+        color: #718096;
+    }
+    .empty-icon {
+        font-size: 4rem;
+        color: #e2e8f0;
+        margin-bottom: 1rem;
+    }
+    @media (max-width: 768px) {
+        .modern-table-container {
+            margin: 1rem;
+            padding: 1rem;
+        }
+        .status-title {
+            font-size: 2rem;
+        }
+        .modern-table {
+            font-size: 0.75rem;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="status-hero">
+    <div class="container">
+        <div class="status-hero-content">
+            <div class="text-center">
+                <div class="status-icon">
+                    <i class="fas fa-chart-line" style="font-size: 3rem; color: white;"></i>
+                </div>
+                <h1 class="status-title">Download Status</h1>
+                <p class="status-subtitle">Track your YouTube downloads in real-time</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container">
+    <div class="modern-table-container">
+        <div class="table-responsive">
+            <table class="table modern-table">
+                <thead>
+                    <tr>
+                        <th>TITLE</th>
+                        <th>LINK</th>
+                        <th>FORMAT</th>
+                        <th>QUALITY</th>
+                        <th>STATUS</th>
+                        <th>ERROR MESSAGE</th>
+                        <th>CREATED</th>
+                        <th>UPDATED</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for task in tasks %}
+                    <tr>
+                        <td>
+                            <div class="fw-medium text-truncate" style="max-width: 200px;">
+                                {{ task.title|default:"N/A" }}
+                            </div>
+                        </td>
+                        <td>
+                            <a href="{{ task.link }}" target="_blank" class="url-link" title="{{ task.link }}">
+                                {{ task.link|truncatechars:40 }}
+                            </a>
+                        </td>
+                        <td>
+                            <span class="format-badge">{{ task.format|upper }}</span>
+                        </td>
+                        <td>
+                            <span class="quality-badge">{{ task.quality|capfirst }}</span>
+                        </td>
+                        <td>
+                            {% if task.status == "Completed" %}
+                                <span class="status-badge badge-completed">
+                                    <i class="fas fa-check-circle me-1"></i>{{ task.status }}
+                                </span>
+                            {% elif task.status == "In Progress" %}
+                                <span class="status-badge badge-progress">
+                                    <i class="fas fa-spinner fa-spin me-1"></i>{{ task.status }}
+                                </span>
+                            {% elif task.status == "Queued" %}
+                                <span class="status-badge badge-queued">
+                                    <i class="fas fa-clock me-1"></i>{{ task.status }}
+                                </span>
+                            {% else %}
+                                <span class="status-badge badge-error">
+                                    <i class="fas fa-exclamation-triangle me-1"></i>{{ task.status }}
+                                </span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            <div class="text-truncate" style="max-width: 200px;" title="{{ task.error_message }}">
+                                {{ task.error_message|default:"-" }}
+                            </div>
+                        </td>
+                        <td>
+                            <small class="text-muted">
+                                {{ task.created_at|date:"M d, H:i" }}
+                            </small>
+                        </td>
+                        <td>
+                            <small class="text-muted">
+                                {{ task.updated_at|date:"M d, H:i" }}
+                            </small>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="8">
+                            <div class="empty-state">
+                                <div class="empty-icon">
+                                    <i class="fas fa-inbox"></i>
+                                </div>
+                                <h4>No Downloads Yet</h4>
+                                <p>Start downloading some YouTube videos to see them here!</p>
+                            </div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="text-center mb-5">
+        <a href="{% url 'index' %}" class="action-btn">
+            <i class="fas fa-arrow-left"></i>
+            Back to Converter
+        </a>
+    </div>
+</div>
+
+<script>
+    // Auto-refresh status every 5 seconds
+    function fetchTaskStatus() {
+        fetch("{% url 'get_task_status' %}")
+            .then(response => response.json())
+            .then(data => {
+                const tableBody = document.querySelector(".modern-table tbody");
+                
+                if (data.length === 0) {
+                    tableBody.innerHTML = `
+                        <tr>
+                            <td colspan="8">
+                                <div class="empty-state">
+                                    <div class="empty-icon">
+                                        <i class="fas fa-inbox"></i>
+                                    </div>
+                                    <h4>No Downloads Yet</h4>
+                                    <p>Start downloading some YouTube videos to see them here!</p>
+                                </div>
+                            </td>
+                        </tr>
+                    `;
+                    return;
+                }
+                
+                tableBody.innerHTML = "";
+                
+                data.forEach(task => {
+                    const statusBadge = getStatusBadge(task.status);
+                    const row = `
+                        <tr>
+                            <td>
+                                <div class="fw-medium text-truncate" style="max-width: 200px;">
+                                    ${task.title || 'N/A'}
+                                </div>
+                            </td>
+                            <td>
+                                <a href="${task.link}" target="_blank" class="url-link" title="${task.link}">
+                                    ${task.link.length > 40 ? task.link.substring(0, 40) + '...' : task.link}
+                                </a>
+                            </td>
+                            <td>
+                                <span class="format-badge">${task.format ? task.format.toUpperCase() : 'N/A'}</span>
+                            </td>
+                            <td>
+                                <span class="quality-badge">${task.quality ? task.quality.charAt(0).toUpperCase() + task.quality.slice(1) : 'N/A'}</span>
+                            </td>
+                            <td>${statusBadge}</td>
+                            <td>
+                                <div class="text-truncate" style="max-width: 200px;" title="${task.error_message || ''}">
+                                    ${task.error_message || '-'}
+                                </div>
+                            </td>
+                            <td>
+                                <small class="text-muted">
+                                    ${formatDate(task.created_at)}
+                                </small>
+                            </td>
+                            <td>
+                                <small class="text-muted">
+                                    ${formatDate(task.updated_at)}
+                                </small>
+                            </td>
+                        </tr>
+                    `;
+                    tableBody.innerHTML += row;
+                });
+            })
+            .catch(error => console.log('Error fetching status:', error));
+    }
+    
+    function getStatusBadge(status) {
+        const badges = {
+            'Completed': '<span class="status-badge badge-completed"><i class="fas fa-check-circle me-1"></i>Completed</span>',
+            'In Progress': '<span class="status-badge badge-progress"><i class="fas fa-spinner fa-spin me-1"></i>In Progress</span>',
+            'Queued': '<span class="status-badge badge-queued"><i class="fas fa-clock me-1"></i>Queued</span>'
+        };
+        return badges[status] || '<span class="status-badge badge-error"><i class="fas fa-exclamation-triangle me-1"></i>' + status + '</span>';
+    }
+    
+    function formatDate(dateString) {
+        const date = new Date(dateString);
+        return date.toLocaleDateString('en-US', { 
+            month: 'short', 
+            day: 'numeric', 
+            hour: '2-digit', 
+            minute: '2-digit'
+        });
+    }
+    
+    // Refresh status every 5 seconds
+    setInterval(fetchTaskStatus, 5000);
+</script>
+{% endblock %}

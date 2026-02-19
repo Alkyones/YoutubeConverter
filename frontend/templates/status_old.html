@@ -1,0 +1,307 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block head %}
+<title>YConv - Download Status</title>
+<style>
+    .status-hero {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        padding: 3rem 0;
+        margin-top: -20px;
+        position: relative;
+        overflow: hidden;
+    }
+    .status-hero::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: radial-gradient(circle at 30% 70%, rgba(255, 119, 198, 0.3) 0%, transparent 50%);
+        z-index: 1;
+    }
+    .status-hero-content {
+        position: relative;
+        z-index: 2;
+    }
+    .status-icon {
+        width: 120px;
+        height: 120px;
+        background: rgba(255, 255, 255, 0.1);
+        backdrop-filter: blur(20px);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 1.5rem;
+        border: 2px solid rgba(255, 255, 255, 0.2);
+    }
+    .status-title {
+        color: white;
+        font-size: 3rem;
+        font-weight: 700;
+        margin-bottom: 0.5rem;
+        text-shadow: 0 4px 20px rgba(0,0,0,0.3);
+    }
+    .status-subtitle {
+        color: rgba(255, 255, 255, 0.8);
+        font-size: 1.25rem;
+        margin-bottom: 0;
+    }
+    .modern-table-container {
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(20px);
+        border-radius: 24px;
+        padding: 2rem;
+        margin: 2rem auto;
+        box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        max-width: 1400px;
+    }
+    .modern-table {
+        border: none;
+        border-radius: 16px;
+        overflow: hidden;
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    }
+    .modern-table thead th {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        font-weight: 600;
+        font-size: 0.875rem;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        padding: 1rem 0.75rem;
+        border: none;
+    }
+    .modern-table tbody tr {
+        transition: all 0.3s ease;
+        border-bottom: 1px solid #e2e8f0;
+    }
+    .modern-table tbody tr:hover {
+        background-color: #f8fafc;
+        transform: translateY(-1px);
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    }
+    .modern-table tbody td {
+        padding: 1rem 0.75rem;
+        border: none;
+        vertical-align: middle;
+        font-size: 0.875rem;
+    }
+    .status-badge {
+        padding: 0.5rem 1rem;
+        border-radius: 50px;
+        font-weight: 600;
+        font-size: 0.75rem;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        border: none;
+    }
+    .badge-completed {
+        background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+        color: white;
+    }
+    .badge-progress {
+        background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+        color: white;
+    }
+    .badge-queued {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+    }
+    .badge-error {
+        background: linear-gradient(135deg, #ff6b6b 0%, #ee5a24 100%);
+        color: white;
+    }
+    .format-badge {
+        background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);
+        color: #2d3748;
+        padding: 0.25rem 0.75rem;
+        border-radius: 25px;
+        font-weight: 600;
+        font-size: 0.75rem;
+    }
+    .quality-badge {
+        background: rgba(102, 126, 234, 0.1);
+        color: #667eea;
+        padding: 0.25rem 0.75rem;
+        border-radius: 25px;
+        font-weight: 500;
+        font-size: 0.75rem;
+    }
+    .url-link {
+        color: #667eea;
+        text-decoration: none;
+        font-weight: 500;
+        transition: all 0.3s ease;
+        max-width: 200px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        display: inline-block;
+    }
+    .url-link:hover {
+        color: #764ba2;
+        text-decoration: underline;
+    }
+    .action-btn {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        border: none;
+        border-radius: 12px;
+        padding: 0.75rem 2rem;
+        color: white;
+        font-weight: 600;
+        text-decoration: none;
+        transition: all 0.3s ease;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+    .action-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+        color: white;
+    }
+    .empty-state {
+        text-align: center;
+        padding: 3rem;
+        color: #718096;
+    }
+    .empty-icon {
+        font-size: 4rem;
+        color: #e2e8f0;
+        margin-bottom: 1rem;
+    }
+    @media (max-width: 768px) {
+        .modern-table-container {
+            margin: 1rem;
+            padding: 1rem;
+        }
+        .status-title {
+            font-size: 2rem;
+        }
+        .modern-table {
+            font-size: 0.75rem;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container my-5">
+    <div class="text-center mb-4">
+        <img src="{% static 'images/music-logo.svg' %}" width="150px" alt="logo">
+        <h2 class="status-header mt-3">Download Status</h2>
+    </div>
+
+    <div class="status-container">
+        <div class="table-responsive">
+            <table class="table table-bordered table-hover align-middle">
+                <thead>
+                    <tr>
+                        <th>Title</th>
+                        <th>Link</th>
+                        <th>Format</th>
+                        <th>Quality</th>
+                        <th>Status</th>
+                        <th>Error Message</th>
+                        <th>Created At</th>
+                        <th>Updated At</th>
+                        <th>File Location</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for task in tasks %}
+                    <tr>
+                        <td>{{ task.title }}</td>
+                        <td><a href="{{ task.link }}" target="_blank" class="text-decoration-none">{{ task.link }}</a></td>
+                        <td>
+                            <span class="badge bg-info text-dark">{{ task.format|upper }}</span>
+                        </td>
+                        <td>
+                            <span class="badge bg-secondary">{{ task.quality|capfirst }}</span>
+                        </td>
+                        <td>
+                            {% if task.status == "Completed" %}
+                            <span class="badge bg-success">{{ task.status }}</span>
+                            {% elif task.status == "In Progress" %}
+                            <span class="badge bg-warning text-dark">{{ task.status }}</span>
+                            {% elif task.status == "Queued" %}
+                            <span class="badge bg-primary">{{ task.status }}</span>
+                            {% else %}
+                            <span class="badge bg-danger">{{ task.status }}</span>
+                            {% endif %}
+                        </td>
+                        <td>{{ task.error_message|default:"-" }}</td>
+                        <td>{{ task.created_at|date:"Y-m-d H:i:s" }}</td>
+                        <td>{{ task.updated_at|date:"Y-m-d H:i:s" }}</td>
+                        <td>
+                            {% if task.file_path %}
+                            <a href="javascript:void(0);" onclick="openFolder('{{ task.file_path }}')" class="open-folder-link">Open Folder</a>
+                            {% else %}
+                            <span class="text-muted">Not Available</span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="7" class="text-center text-muted">No tasks found.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="text-center mt-4">
+        <a href="{% url 'index' %}" class="btn btn-primary btn-lg">Go Back</a>
+    </div>
+</div>
+<script>
+    function openFolder(filePath) {
+        alert("This feature is under development. Please check back later.");
+    }
+
+    function fetchTaskStatus() {
+        fetch("{% url 'get_task_status' %}")
+            .then(response => response.json())
+            .then(data => {
+                const tableBody = document.querySelector(".table tbody"); // Updated selector to match your table
+                tableBody.innerHTML = ""; // Clear existing rows
+
+                data.forEach(task => {
+                    const row = `
+                        <tr>
+                            <td>${task.title || 'N/A'}</td>
+                            <td><a href="${task.link}" target="_blank" class="text-decoration-none">${task.link}</a></td>
+                            <td>
+                                <span class="badge ${
+                                    task.status === "Completed" ? "bg-success" :
+                                    task.status === "In Progress" ? "bg-warning text-dark" :
+                                    task.status === "Queued" ? "bg-primary" : "bg-danger"
+                                }">${task.status}</span>
+                            </td>
+                            <td>${task.error_message || '-'}</td>
+                            <td>${new Date(task.created_at).toLocaleString()}</td>
+                            <td>${new Date(task.updated_at).toLocaleString()}</td>
+                            <td>
+                                ${
+                                    task.file_path
+                                        ? `<a href="javascript:void(0);" onclick="openFolder('${task.file_path}')" class="open-folder-link">Open Folder</a>`
+                                        : '<span class="text-muted">Not Available</span>'
+                                }
+                            </td>
+                        </tr>
+                    `;
+                    tableBody.innerHTML += row;
+                });
+            })
+            .catch(error => console.error("Error fetching task status:", error));
+    }
+
+    setInterval(fetchTaskStatus, 8000);
+    fetchTaskStatus();
+</script>
+{% endblock %}

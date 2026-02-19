@@ -5,6 +5,32 @@ Responsive Youtube Video Converter
 
 ![preview](/static/images/preview1.png)
 
+## Project Structure
+
+The project is organized into separate backend and frontend directories:
+
+```
+YoutubeConverter/
+├── backend/          # Django backend files
+│   ├── manage.py     # Django management script
+│   ├── cfe/          # Django project configuration
+│   ├── youtube/      # Main application
+│   ├── media/        # Downloaded files
+│   └── db.sqlite3    # Database
+├── frontend/         # Frontend assets
+│   ├── templates/    # HTML templates
+│   └── static/       # CSS, JS, images
+└── README.md
+```
+
+## Running the Application
+
+Navigate to the backend directory and run:
+```bash
+cd backend
+python manage.py runserver
+```
+
 # Release v1.2
  - Now it allows users to request multiple downloads, query implemented.
  - Status page implemented users can see their download statuses.

@@ -14,10 +14,14 @@ from pathlib import Path
 import json
 import os
 
-CREDENTIALS_DIR = Path(__file__).resolve().parent.parent
+# Backend directory (where manage.py resides)
 BASE_DIR = Path(__file__).resolve().parent.parent
+# Project root directory
+PROJECT_ROOT = BASE_DIR.parent
+# Frontend directory
+FRONTEND_DIR = PROJECT_ROOT / 'frontend'
 
-credentialsFile = Path.joinpath(CREDENTIALS_DIR .parent.parent, 'credentials/youtubeDownloader.json')
+credentialsFile = PROJECT_ROOT.parent.parent / 'credentials/youtubeDownloader.json'
 credentials = json.load(open(credentialsFile))
 
 SECRET_KEY = credentials['secretKey']
@@ -54,7 +58,7 @@ ROOT_URLCONF = 'cfe.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [ BASE_DIR / 'templates'],
+        'DIRS': [ FRONTEND_DIR / 'templates'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -89,7 +93,7 @@ USE_I18N = True
 USE_TZ = True
 
 
-STATICFILES_DIRS = [ BASE_DIR / 'static']
+STATICFILES_DIRS = [ FRONTEND_DIR / 'static']
 STATIC_URL = 'static/'
 
 
